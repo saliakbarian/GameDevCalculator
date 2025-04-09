@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>محاسبه‌گر ارزش کارت‌ها</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .label {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .input-field {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #e0f7fa;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.8;
+    }
+
+    .social {
+      margin-top: 20px;
+    }
+
+    .social a {
+      margin: 0 10px;
+      display: inline-block;
+    }
+
+    .social img {
+      width: 40px;
+      height: 40px;
+    }
+
+    @media (max-width: 480px) {
+      .row {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .label, .input-field {
+        margin-bottom: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>محاسبه‌گر ارزش کارت‌ها</h1>
+
+    <div class="row">
+      <div class="label">Current Team Size</div>
+      <div class="input-field">
+        <input type="text" id="N" placeholder="تعداد کارمند" />
+      </div>
+      <div class="label">تعداد کارمند</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Marketing Boost From Cards (Percent)</div>
+      <div class="input-field">
+        <input type="text" id="M" placeholder="درصد افزایش کارت‌های مارکتینگ" />
+      </div>
+      <div class="label">درصد افزایش کارت‌های مارکتینگ</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Total Team Work Speed</div>
+      <div class="input-field">
+        <input type="text" id="S" placeholder="مجموع سرعت کار" />
+      </div>
+      <div class="label">مجموع سرعت کار</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Next Slot Price</div>
+      <div class="input-field">
+        <input type="text" id="P" placeholder="قیمت اسلات بعدی" />
+      </div>
+      <div class="label">قیمت اسلات بعدی</div>
+    </div>
+
+    <div class="result">
+      <div id="MV">ارزش خرید یک درصد کارت مارکتینگ = Max Price for 1% Marketing: -</div>
+      <div id="D3V">ارزش خرید یک واحد کارت توسعه سه منظوره = Max Price for 1 Unit of 3 Purpose Dev Cards: -</div>
+      <div id="D1V">ارزش خرید یک واحد کارت توسعه تخصصی = Max Price for 1 Unit of Specialized Dev Cards: -</div>
+    </div>
+
+    <div class="social">
+      <a href="https://instagram.com/yourpage" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" />
+      </a>
+      <a href="https://t.me/yourchannel" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('input');
+
+    function formatNumberInput(input) {
+      let value = input.value.replace(/,/g, '');
+      if (!isNaN(value) && value !== '') {
+        input.value = Number(value).toLocaleString('en-US');
+      }
+    }
+
+    function calculate() {
+      const N = parseFloat(document.getElementById('N').value.replace(/,/g, '')) || 0;
+      const M = parseFloat(document.getElementById('M').value.replace(/,/g, '')) || 0;
+      const S = parseFloat(document.getElementById('S').value.replace(/,/g, '')) || 0;
+      const P = parseFloat(document.getElementById('P').value.replace(/,/g, '')) || 0;
+
+      if (N > 0 && S > 0) {
+        const TI = (100 / N) * 0.85;
+        const MI = (100 / (100 + M)) / 2;
+        const D3I = (3 * 100) / S;
+        const D1I = 100 / S;
+
+        const MV = (P * MI) / TI;
+        const D3V = (P * D3I) / TI;
+        const D1V = (P * D1I) / TI;
+
+        document.getElementById('MV').innerHTML = `ارزش خرید یک درصد کارت مارکتینگ = Max Price for 1% Marketing: ${MV.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        document.getElementById('D3V').innerHTML = `ارزش خرید یک واحد کارت توسعه سه منظوره = Max Price for 1 Unit of 3 Purpose Dev Cards: ${D3V.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        document.getElementById('D1V').innerHTML = `ارزش خرید یک واحد کارت توسعه تخصصی = Max Price for 1 Unit of Specialized Dev Cards: ${D1V.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+      } else {
+        document.getElementById('MV').innerHTML = `ارزش خرید یک درصد کارت مارکتینگ = Max Price for 1% Marketing: -`;
+        document.getElementById('D3V').innerHTML = `ارزش خرید یک واحد کارت توسعه سه منظوره = Max Price for 1 Unit of 3 Purpose Dev Cards: -`;
+        document.getElementById('D1V').innerHTML = `ارزش خرید یک واحد کارت توسعه تخصصی = Max Price for 1 Unit of Specialized Dev Cards: -`;
+      }
+    }
+
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        formatNumberInput(input);
+        calculate();
+      });
+    });
+  </script>
+</body>
+</html>
