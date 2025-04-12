@@ -90,6 +90,7 @@
 <body>
   <div class="container">
     <h1>محاسبه‌گر ارزش کارت‌ها</h1>
+    <h2>Hamster GameDev Heroes</h2>
     <h2>Cards Value Calculator</h2>
 
     <div class="row">
@@ -111,9 +112,9 @@
     <hr>
 
     <div class="row">
-      <div class="label">مجموع سرعت کار</div>
+      <div class="label">مجموع سرعت کار تیم</div>
       <div class="input-field">
-        <input type="text" id="S" placeholder="مجموع سرعت کار" />
+        <input type="text" id="S" placeholder="مجموع سرعت کار تیم" />
       </div>
       <div class="label">Total Team Work Speed</div>
     </div>
@@ -129,9 +130,9 @@
     <hr>
 
     <div class="result">
-      <div id="MV">ارزش خرید یک درصد کارت مارکتینگ = Max Price for 1% Marketing: -</div>
-      <div id="D3V">ارزش خرید یک واحد کارت توسعه سه منظوره = Max Price for 1 Unit of 3 Purpose Dev Cards: -</div>
-      <div id="D1V">ارزش خرید یک واحد کارت توسعه تخصصی = Max Price for 1 Unit of Specialized Dev Cards: -</div>
+      <div id="MV"></div>
+      <div id="D3V"></div>
+      <div id="D1V"></div>
     </div>
 
     <div class="social">
@@ -144,6 +145,9 @@
       <a href="https://t.me/HamsterFansIran" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" />
       </a>
+      <a href="https://t.me/HamsterFansIran" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Wikibooks-help-icon.svg/922px-Wikibooks-help-icon.svg.png" alt="Telegram" />
+      </a>
     </div>
   </div>
 
@@ -154,6 +158,18 @@
       let value = input.value.replace(/,/g, '');
       if (!isNaN(value) && value !== '') {
         input.value = Number(value).toLocaleString('en-US');
+      }
+    }
+
+    function formatNumber(num) {
+      if (num >= 1_000_000_000) {
+          return (num / 1_000_000_000).toFixed(2).replace(/\.?0+$/, '') + 'B';
+      } else if (num >= 1_000_000) {
+          return (num / 1_000_000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+      } else if (num >= 1_000) {
+          return (num / 1_000).toFixed(2).replace(/\.?0+$/, '') + 'K';
+      } else {
+          return num.toFixed(2).replace(/\.?0+$/, '')+'$';
       }
     }
 
@@ -173,9 +189,9 @@
         const D3V = (P * D3I) / TI;
         const D1V = (P * D1I) / TI;
 
-        document.getElementById('MV').innerHTML = `ارزش خرید یک درصد کارت مارکتینگ = Max Price for 1% Marketing <br/> ${MV.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <hr/>`;
-        document.getElementById('D3V').innerHTML = `ارزش خرید یک واحد کارت توسعه سه منظوره = Max Price for 1 Unit of 3 Purpose Dev Cards <br/> ${D3V.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <hr/>`;
-        document.getElementById('D1V').innerHTML = `ارزش خرید یک واحد کارت توسعه تخصصی = Max Price for 1 Unit of Specialized Dev Cards <br/> ${D1V.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <hr/>`;
+        document.getElementById('MV').innerHTML = `ارزش خرید یک درصد کارت مارکتینگ <br/> Max Price for 1% Marketing <br/> ${formatNumber(MV)} <hr/>`;
+        document.getElementById('D3V').innerHTML = `ارزش خرید یک واحد کارت توسعه سه منظوره <br/> Max Price for 1 Unit of 3 Purpose Dev Cards <br/> ${formatNumber(D3V)} $ <hr/>`;
+        document.getElementById('D1V').innerHTML = `ارزش خرید یک واحد کارت توسعه تخصصی <br/> Max Price for 1 Unit of Specialized Dev Cards <br/> ${formatNumber(D1V)} $ <hr/>`;
       } else {
         document.getElementById('MV').innerHTML = `ارزش خرید یک درصد کارت مارکتینگ <br/> Max Price for 1% Marketing <br/> - <hr/>`;
         document.getElementById('D3V').innerHTML = `ارزش خرید یک واحد کارت توسعه سه منظوره <br/> Max Price for 1 Unit of 3 Purpose Dev Cards <br/> - <hr/>`;
@@ -189,7 +205,27 @@
         calculate();
       });
     });
-    calculate();
+
+    document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', () => {
+        localStorage.setItem(input.id, input.value);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input').forEach(input => {
+          const savedValue = localStorage.getItem(input.id);
+          if (savedValue !== null) {
+              input.value = savedValue;
+          }
+      });
+      // Optional: Trigger calculation immediately after restoring values
+      calculate();
+    });
+
+
+
+//    calculate();
   </script>
 </body>
 </html>
